@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { Form, Button, Row, Col, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
 import { getUserDetails, updateUserProfile } from "../actions/userActions";
 import { listMyOrders } from "../actions/orderActions";
-import LinkContainer from "react-router-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
 
 const ProfileScreen = ({ location, history }) => {
   const [name, setName] = useState("");
@@ -31,8 +30,6 @@ const ProfileScreen = ({ location, history }) => {
   const orderListMy = useSelector((state) => state.orderListMy);
   const { loading: loadingOrders, error: errorOrders, orders } = orderListMy;
 
-  const redirect = location.search ? location.search.split("=")[1] : "/";
-
   useEffect(() => {
     if (!userInfo) {
       history.push("/");
@@ -41,9 +38,10 @@ const ProfileScreen = ({ location, history }) => {
         dispatch(getUserDetails("profile"));
         dispatch(listMyOrders());
       } else {
-        setName(user.name);
-        setEmail(user.email);
+        setName(user?.name);
+        setEmail(user?.email);
       }
+      console.log(user);
     }
   }, [history, userInfo, dispatch, user]);
 
@@ -125,21 +123,21 @@ const ProfileScreen = ({ location, history }) => {
               </tr>
             </thead>
             <tbody>
-              {orders.map((order) => (
+              {orders?.map((order) => (
                 <tr key={order._id}>
                   <td>{order._id}</td>
-                  <td>{order.createdAt.substring(0, 10)}</td>
+                  <td>{order.createdAt?.substring(0, 10)}</td>
                   <td>{order.totalPrice}</td>
                   <td>
                     {order.isPaid ? (
-                      order.paidAt.substring(0, 10)
+                      order.paidAt?.substring(0, 10)
                     ) : (
                       <i className="fas fa-times" style={{ color: "red" }}></i>
                     )}
                   </td>
                   <td>
                     {order.isDelivered ? (
-                      order.deliveredAt.substring(0, 10)
+                      order.deliveredAt?.substring(0, 10)
                     ) : (
                       <i className="fas fa-times" style={{ color: "red" }}></i>
                     )}
