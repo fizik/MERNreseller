@@ -9,8 +9,9 @@ import {
   deleteUser,
   getUserById,
   updateUser,
+  registerVendor,
 } from "../controllers/userController.js";
-import { admin, protect } from "../middleware/authMiddleware.js";
+import { admin, protect, vendor } from "../middleware/authMiddleware.js";
 
 router.post("/login", authUser);
 router
@@ -24,5 +25,6 @@ router
   .put(protect, updateUser);
 
 router.route("/").post(registerUser).get(protect, admin, getUsers);
+router.route("/vendor").post(protect, vendor, registerVendor);
 
 export default router;

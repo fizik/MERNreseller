@@ -11,7 +11,7 @@ const ChectoutSteps = ({ step1, step2, step3, step4 }) => {
             <Nav.Link>Sign In</Nav.Link>
           </LinkContainer>
         ) : (
-          <Nav.Link disbled>Sign In</Nav.Link>
+          <Nav.Link disabled>Sign In</Nav.Link>
         )}
       </Nav.Item>
 
@@ -21,7 +21,7 @@ const ChectoutSteps = ({ step1, step2, step3, step4 }) => {
             <Nav.Link>Shipping</Nav.Link>
           </LinkContainer>
         ) : (
-          <Nav.Link disbled>Shipping</Nav.Link>
+          <Nav.Link disabled>Shipping</Nav.Link>
         )}
       </Nav.Item>
 
@@ -31,7 +31,7 @@ const ChectoutSteps = ({ step1, step2, step3, step4 }) => {
             <Nav.Link>Payment</Nav.Link>
           </LinkContainer>
         ) : (
-          <Nav.Link disbled>Payment</Nav.Link>
+          <Nav.Link disabled>Payment</Nav.Link>
         )}
       </Nav.Item>
 
@@ -41,7 +41,7 @@ const ChectoutSteps = ({ step1, step2, step3, step4 }) => {
             <Nav.Link>Place Order</Nav.Link>
           </LinkContainer>
         ) : (
-          <Nav.Link disbled>Place Order</Nav.Link>
+          <Nav.Link disabled>Place Order</Nav.Link>
         )}
       </Nav.Item>
     </Nav>

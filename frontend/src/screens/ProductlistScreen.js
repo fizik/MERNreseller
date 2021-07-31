@@ -10,17 +10,23 @@ import {
   listProducts,
   deleteProduct,
   createProduct,
+  listMyProducts,
 } from "../actions/productActions";
 import { PRODUCT_CREATE_RESET } from "../constants/productConstants";
 
 const ProductListScreen = ({ history, match }) => {
   const pageNumber = match.params.pageNumber || 1;
   const dispatch = useDispatch();
-  const productList = useSelector((state) => state.productList);
-  const { loading, error, products, page, pages } = productList;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
+
+  const productList = useSelector((state) => state.productList);
+  const { loading, error, products, page, pages } = productList;
+
+  const productListMy = useSelector((state) => state.productListMy);
+  const { products: productsMyList } = productListMy;
+
   const productDelete = useSelector((state) => state.productDelete);
   const {
     success: successDelete,
@@ -35,17 +41,32 @@ const ProductListScreen = ({ history, match }) => {
     error: errorCreate,
     product: createdProduct,
   } = productCreate;
-
+  const userId = userInfo?._id;
   useEffect(() => {
     dispatch({ type: PRODUCT_CREATE_RESET });
 
-    if (!userInfo.isAdmin) {
+    if (!userInfo?.isAdmin && !userInfo?.type === "vendor") {
       history.push("/login");
     }
     if (successCreate) {
-      history.push(`/admin/product/${createdProduct?._id}/edit`);
+      if (userInfo?.isAdmin) {
+        history.push(
+          `/admin/product/${createdProduct?._id}/${userInfo?._id}/edit`
+        );
+      }
+
+      if (userInfo?.type === "vendor") {
+        history.push(
+          `/vendor/product/${createdProduct?._id}/${userInfo?._id}/edit`
+        );
+      }
     } else {
-      dispatch(listProducts("", pageNumber));
+      if (userInfo?.isAdmin) {
+        dispatch(listProducts("", pageNumber));
+      }
+      if (userInfo?.type === "vendor") {
+        dispatch(listMyProducts(userId));
+      }
     }
   }, [
     history,
@@ -55,6 +76,7 @@ const ProductListScreen = ({ history, match }) => {
     successCreate,
     createdProduct,
     pageNumber,
+    userId,
   ]);
 
   const deleteHandler = (id) => {
@@ -66,6 +88,7 @@ const ProductListScreen = ({ history, match }) => {
   const createproducthandler = (e) => {
     dispatch(createProduct());
   };
+  console.log(productsMyList);
   return (
     <>
       <Row className="align-items-center">
@@ -99,32 +122,64 @@ const ProductListScreen = ({ history, match }) => {
               </tr>
             </thead>
             <tbody>
-              {products?.map((product) => (
-                <tr key={product._id}>
-                  <td>{product._id}</td>
-                  <td>{product.name}</td>
-                  <td>${product.price}</td>
-                  <td>{product.category}</td>
-                  <td>{product.brand}</td>
-                  <td>
-                    <LinkContainer to={`/admin/product/${product._id}/edit`}>
-                      <Button variant="light" className="btn-sm">
-                        <i className="fas fa-edit"></i>
+              {userInfo?.isAdmin &&
+                products?.map((product) => (
+                  <tr key={product._id}>
+                    <td>{product._id}</td>
+                    <td>{product.name}</td>
+                    <td>${product.price}</td>
+                    <td>{product.category}</td>
+                    <td>{product.brand}</td>
+                    <td>
+                      <LinkContainer
+                        to={`/admin/product/${product._id}/${userInfo?._id}/edit`}
+                      >
+                        <Button variant="light" className="btn-sm">
+                          <i className="fas fa-edit"></i>
+                        </Button>
+                      </LinkContainer>
+                      <Button
+                        variant="danger"
+                        className="btn-sm"
+                        onClick={() => deleteHandler(product._id)}
+                      >
+                        <i className="fas fa-trash"></i>
                       </Button>
-                    </LinkContainer>
-                    <Button
-                      variant="danger"
-                      className="btn-sm"
-                      onClick={() => deleteHandler(product._id)}
-                    >
-                      <i className="fas fa-trash"></i>
-                    </Button>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                  </tr>
+                ))}
+
+              {userInfo?.type === "vendor" &&
+                productsMyList?.map((product) => (
+                  <tr key={product._id}>
+                    <td>{product._id}</td>
+                    <td>{product.name}</td>
+                    <td>${product.price}</td>
+                    <td>{product.category}</td>
+                    <td>{product.brand}</td>
+                    <td>
+                      <LinkContainer
+                        to={`/vendor/product/${product._id}/${userInfo?._id}/edit`}
+                      >
+                        <Button variant="light" className="btn-sm">
+                          <i className="fas fa-edit"></i>
+                        </Button>
+                      </LinkContainer>
+                      <Button
+                        variant="danger"
+                        className="btn-sm"
+                        onClick={() => deleteHandler(product._id)}
+                      >
+                        <i className="fas fa-trash"></i>
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </Table>
-          <Paginate pages={pages} page={page} isAdmin={true} />
+          {!userInfo?.type === "vendor" && (
+            <Paginate pages={pages} page={page} isAdmin={true} />
+          )}
         </>
       )}
     </>

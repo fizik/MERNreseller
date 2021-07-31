@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const orderSchema = mongoose.Schema(
   {
+    vendorId: { type: String },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
@@ -69,14 +70,20 @@ const orderSchema = mongoose.Schema(
     paidAt: {
       type: Date,
     },
-    isDelivered: {
-      type: Boolean,
-      required: true,
-      default: false,
+    delivery: {
+      isDelivered: {
+        type: Boolean,
+        required: true,
+        default: false,
+      },
+      deliveredAt: {
+        type: Date,
+      },
+      deliveryId: {
+        type: String,
+      },
     },
-    deliveredAt: {
-      type: Date,
-    },
+
     createdAt: {
       type: Date,
     },
@@ -86,6 +93,6 @@ const orderSchema = mongoose.Schema(
   }
 );
 
-const Order = mongoose.model("Order", orderSchema);
+const VendorOrder = mongoose.model("VendorOrder", orderSchema);
 
-export default Order;
+export default VendorOrder;

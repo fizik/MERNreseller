@@ -12,6 +12,8 @@ import {
 import {
   ORDER_PAY_RESET,
   ORDER_DELIVER_RESET,
+  ORDER_CREATE_RESET,
+  ORDER_VENDOR_RESET,
 } from "../constants/orderConstants";
 import axios from "axios";
 import { PayPalButton } from "react-paypal-button-v2";
@@ -43,6 +45,8 @@ const OrderScreen = ({ match, history }) => {
       order?.orderItems.reduce((acc, item) => acc + item.price * item.qty, 0)
     );
   }
+  dispatch({ type: ORDER_CREATE_RESET });
+  dispatch({ type: ORDER_VENDOR_RESET });
 
   useEffect(() => {
     if (!userInfo) {
@@ -73,15 +77,25 @@ const OrderScreen = ({ match, history }) => {
     }
 
     // addPaypalScript();
-  }, [dispatch, orderId, successPay, order, successDeliver]);
+  }, [dispatch, orderId, history, successPay, userInfo, order, successDeliver]);
 
   const successPaymentHandler = (paymentResult) => {
-    console.log(paymentResult);
     dispatch(payOrder(orderId, paymentResult));
   };
   const deliverHandler = () => {
     dispatch(deliverOrder(order));
+    if (userInfo?.type === "vendor") {
+      dispatch(
+        payOrder(orderId, {
+          id: "Addas",
+          status: "COMPLETED",
+          update_time: Date.now(),
+          email_address: userInfo?.email,
+        })
+      );
+    }
   };
+
   return loading ? (
     <Loader />
   ) : error ? (
@@ -123,7 +137,7 @@ const OrderScreen = ({ match, history }) => {
               <h2>Payment Method</h2>
               <p>
                 <strong>Method:</strong>
-                {order.paymentMethod}
+                {order?.paymentMethod}
               </p>
               {order?.isPaid ? (
                 <Message variant="success">Paid on {order?.paidAt}</Message>
@@ -133,7 +147,7 @@ const OrderScreen = ({ match, history }) => {
             </ListGroup.Item>
             <ListGroup.Item>
               <h2>Order Items</h2>
-              {order.orderItems.length === 0 ? (
+              {order?.orderItems?.length === 0 ? (
                 <Message>Order is Empty</Message>
               ) : (
                 <ListGroup variant="flush">
@@ -203,25 +217,32 @@ const OrderScreen = ({ match, history }) => {
                 {!sdkReady ? (
                   <Loader />
                 ) : (
-                  <PayPalButton
-                    amount={order?.totalPrice}
-                    onSuccess={successPaymentHandler}
-                  />
+                  <>
+                    {order.paymentMethod === "PayPal" ? (
+                      <PayPalButton
+                        amount={order?.totalPrice}
+                        onSuccess={successPaymentHandler}
+                      />
+                    ) : (
+                      ""
+                    )}
+                  </>
                 )}
               </ListGroup.Item>
             )}
             {loadingDeliver && <Loader />}
-            {userInfo?.isAdmin && order.isPaid && !order.isDelivered && (
-              <ListGroup.Item>
-                <Button
-                  type="button"
-                  className="btn btn-block"
-                  onClick={deliverHandler}
-                >
-                  Mark as Delivered
-                </Button>
-              </ListGroup.Item>
-            )}
+            {(userInfo?.isAdmin && order.isPaid && !order.isDelivered) ||
+              (userInfo?.type === "vendor" && !order.isDelivered && (
+                <ListGroup.Item>
+                  <Button
+                    type="button"
+                    className="btn btn-block"
+                    onClick={deliverHandler}
+                  >
+                    Mark as Delivered
+                  </Button>
+                </ListGroup.Item>
+              ))}
           </ListGroup>
         </Col>
       </Row>

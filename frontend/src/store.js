@@ -9,6 +9,7 @@ import {
   productUpdateReducer,
   productReviewCreateReducer,
   productTopRatedReducer,
+  productListMyReducer,
 } from "./reducers/productReducers";
 import { cartReducer } from "./reducers/cartReducers";
 import {
@@ -18,9 +19,11 @@ import {
   userLoginReducer,
   userRegisterReducer,
   userUpdateProfileReducer,
+  vendorRegisterReducer,
 } from "./reducers/userReducers";
 import {
   orderCreateReducer,
+  orderCreateVendorReducer,
   orderDeliverReducer,
   orderDetailsReducer,
   orderListMyReducer,
@@ -29,25 +32,32 @@ import {
 } from "./reducers/orderReducers";
 const reducer = combineReducers({
   productList: productListReducer,
+  productListMy: productListMyReducer,
   productDetails: productDetailsReducer,
+  productCreate: productCreateReducer,
+  productUpdate: productUpdateReducer,
+  productReviewCreate: productReviewCreateReducer,
+  productTopRated: productTopRatedReducer,
+
   cart: cartReducer,
+
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
   userDetails: userDetailsReducer,
   userUpdateProfile: userUpdateProfileReducer,
   userList: userListReducer,
+  userDelete: userDeleteReducer,
+
   orderCreate: orderCreateReducer,
   orderDetails: orderDetailsReducer,
   orderPay: orderPayReducer,
-  userDelete: userDeleteReducer,
   productDelete: productDeleteReducer,
   orderListMy: orderListMyReducer,
-  productCreate: productCreateReducer,
-  productUpdate: productUpdateReducer,
   orderList: orderListReducer,
   orderDeliver: orderDeliverReducer,
-  productReviewCreate: productReviewCreateReducer,
-  productTopRated: productTopRatedReducer,
+
+  vendorRegister: vendorRegisterReducer,
+  orderCreateVendor: orderCreateVendorReducer,
 });
 
 const cartItemsFromStorage = localStorage.getItem("cartItems")
@@ -62,7 +72,7 @@ const shippingAddressFromStorage = localStorage.getItem("shippingAddress")
   : {};
 const initialState = {
   cart: { cartItems: cartItemsFromStorage },
-  shippingAddress: shippingAddressFromStorage,
+  shippingAddress: { shippingAddress: shippingAddressFromStorage },
   userLogin: { userInfo: userInfoFromStorage },
 };
 const middleware = [thunk];

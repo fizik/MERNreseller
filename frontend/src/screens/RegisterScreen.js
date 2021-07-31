@@ -14,6 +14,7 @@ const RegisterScreen = ({ location, history }) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState(null);
+  const [type, setType] = useState("");
 
   const dispatch = useDispatch();
 
@@ -32,7 +33,7 @@ const RegisterScreen = ({ location, history }) => {
     if (password !== confirmPassword) {
       setMessage("Passwords do not Match");
     } else {
-      dispatch(register(name, email, password));
+      dispatch(register(name, email, password, type));
     }
   };
   return (
@@ -72,11 +73,35 @@ const RegisterScreen = ({ location, history }) => {
         <Form.Group controlId="password">
           <Form.Label>Password</Form.Label>
           <Form.Control
-            type="confirmPassword"
+            type="password"
             placeholder="Confirm Password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           ></Form.Control>
+        </Form.Group>
+        <Form.Group controlId="type">
+          <Form.Label>Account Type</Form.Label>
+          <Col>
+            <Form.Check
+              type="radio"
+              label="vendor"
+              id="vendor"
+              name="type"
+              value="vendor"
+              onChange={(e) => setType(e.target.value)}
+            ></Form.Check>
+          </Col>
+          <Col>
+            <Form.Check
+              type="radio"
+              label="customer"
+              id="customer"
+              name="type"
+              value="customer"
+              checked
+              onChange={(e) => setType(e.target.value)}
+            ></Form.Check>
+          </Col>
         </Form.Group>
         <Button type="submit" variant="primary">
           Register

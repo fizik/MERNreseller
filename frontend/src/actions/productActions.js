@@ -22,6 +22,9 @@ import {
   PRODUCT_TOP_REQUEST,
   PRODUCT_TOP_SUCCESS,
   PRODUCT_TOP_FAIL,
+  PRODUCT_LIST_MY_SUCCESS,
+  PRODUCT_LIST_MY_REQUEST,
+  PRODUCT_LIST_MY_FAIL,
 } from "../constants/productConstants";
 
 export const listProducts =
@@ -44,6 +47,29 @@ export const listProducts =
       });
     }
   };
+export const listMyProducts = (id) => async (dispatch, getState) => {
+  const {
+    userLogin: { userInfo },
+  } = getState();
+  const config = {
+    headers: {
+      Authorization: `Bearer ${userInfo.token}`,
+    },
+  };
+  try {
+    dispatch({ type: PRODUCT_LIST_MY_REQUEST });
+    const { data } = await axios.get(`/api/products/vendor/${id}`, config);
+    dispatch({ type: PRODUCT_LIST_MY_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: PRODUCT_LIST_MY_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
 export const listProductDetails = (id) => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_DETAILS_REQUEST });

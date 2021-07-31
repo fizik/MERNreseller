@@ -17,6 +17,9 @@ import {
   ORDER_PAY_FAIL,
   ORDER_PAY_REQUEST,
   ORDER_PAY_SUCCESS,
+  ORDER_VENDOR_FAIL,
+  ORDER_VENDOR_REQUEST,
+  ORDER_VENDOR_SUCCESS,
 } from "../constants/orderConstants";
 import axios from "axios";
 export const createOrder = (order) => async (dispatch, getState) => {
@@ -24,6 +27,7 @@ export const createOrder = (order) => async (dispatch, getState) => {
     dispatch({
       type: ORDER_CREATE_REQUEST,
     });
+
     const {
       userLogin: { userInfo },
     } = getState();
@@ -42,6 +46,37 @@ export const createOrder = (order) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: ORDER_CREATE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+export const createVendorOrder = (order) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: ORDER_VENDOR_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const { data } = await axios.post(`/api/orders/vendor`, order, config);
+    dispatch({
+      type: ORDER_VENDOR_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: ORDER_VENDOR_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

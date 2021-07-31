@@ -9,7 +9,6 @@ const Header = () => {
   const dispatch = useDispatch();
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
-
   const logoutHandler = () => {
     dispatch(logout());
   };
@@ -51,11 +50,33 @@ const Header = () => {
                   <LinkContainer to="/admin/userlist">
                     <NavDropdown.Item>Users</NavDropdown.Item>
                   </LinkContainer>
-                  <LinkContainer to="admin/productlist">
+                  <LinkContainer to="/admin/productlist">
                     <NavDropdown.Item>Products</NavDropdown.Item>
                   </LinkContainer>
-                  <LinkContainer to="admin/orderlist">
+                  <LinkContainer to="/admin/orderlist">
                     <NavDropdown.Item>Orders</NavDropdown.Item>
+                  </LinkContainer>
+                </NavDropdown>
+              ) : null}
+              {userInfo && userInfo.type === "vendor" ? (
+                <NavDropdown title="Vendor" id="vendormenu">
+                  <LinkContainer to="/vendor/registration">
+                    <NavDropdown.Item>Registration</NavDropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to="/vendor/orderlist">
+                    <NavDropdown.Item>Dashboard</NavDropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to="/vendor/productlist">
+                    <NavDropdown.Item>My Products</NavDropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to="/vendor/myorders">
+                    <NavDropdown.Item>Myorders</NavDropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to="/vendor/promotions">
+                    <NavDropdown.Item>Promotions</NavDropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to="/vendor/settings">
+                    <NavDropdown.Item>Settings</NavDropdown.Item>
                   </LinkContainer>
                 </NavDropdown>
               ) : null}

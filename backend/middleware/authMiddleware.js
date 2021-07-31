@@ -31,5 +31,13 @@ const admin = (req, res, next) => {
     throw new Error("Not Authorized as an admin");
   }
 };
+const vendor = (req, res, next) => {
+  if (req.user?.type === "vendor" || req.user?.isAdmin) {
+    next();
+  } else {
+    res.status(401);
+    throw new Error("Not Authorized ");
+  }
+};
 
-export { protect, admin };
+export { protect, admin, vendor };

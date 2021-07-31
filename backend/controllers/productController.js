@@ -22,6 +22,18 @@ const getProducts = asyncHandler(async (req, res) => {
     .skip(pageSize * (page - 1));
   res.json({ products, page, pages: Math.ceil(count / pageSize) });
 });
+// //@desc    Fetch all Products of a vendor
+// //@route   GET /api/products/:id
+// //@access  private
+const getProductsVendor = asyncHandler(async (req, res) => {
+  const products = await Product.find({ updatedById: req.user._id });
+  if (products) {
+    res.json(products);
+  } else {
+    res.status(404);
+    throw new Error('"Products not found"');
+  }
+});
 //@desc    Fetch single Products
 //@route   GET /api/products/:id
 //@access  publ
@@ -72,8 +84,16 @@ const createProduct = asyncHandler(async (req, res) => {
 //@desc POST /api/products/:id
 //@desc Private/Admin
 const updateProduct = asyncHandler(async (req, res) => {
-  const { name, price, description, image, brand, category, countInStock } =
-    req.body;
+  const {
+    name,
+    price,
+    description,
+    image,
+    brand,
+    category,
+    countInStock,
+    updatedById,
+  } = req.body;
 
   const product = await Product.findById(req.params.id);
 
@@ -85,6 +105,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     product.brand = brand;
     product.category = category;
     product.countInStock = countInStock;
+    product.updatedById = updatedById;
   }
 
   const updatedProduct = await product.save();
@@ -144,4 +165,5 @@ export {
   updateProduct,
   createProductReview,
   getTopProduct,
+  getProductsVendor,
 };

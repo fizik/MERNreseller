@@ -11,6 +11,8 @@ import { PRODUCT_UPDATE_RESET } from "../constants/productConstants";
 
 const ProductEditScreen = ({ match, history }) => {
   const productId = match.params.id;
+  const userId = match.params.userId;
+  console.log(userId);
   const dispatch = useDispatch();
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
@@ -37,7 +39,7 @@ const ProductEditScreen = ({ match, history }) => {
     } else {
       if (!product?.name || product?._id !== productId) {
         dispatch(listProductDetails(productId));
-        history.push("/admin/productList");
+        history.push("/admin/productList/:id");
       } else {
         setName(product?.name);
         setPrice(product?.price);
@@ -83,6 +85,7 @@ const ProductEditScreen = ({ match, history }) => {
         category,
         description,
         countInStock,
+        updatedById: userId,
       })
     );
   };

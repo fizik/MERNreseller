@@ -20,6 +20,9 @@ import {
   USER_DELETE_REQUEST,
   USER_DELETE_SUCCESS,
   USER_DELETE_FAIL,
+  VENDOR_REGISTRATION_REQUEST,
+  VENDOR_REGISTRATION_SUCCESS,
+  VENDOR_REGISTRATION_FAIL,
 } from "../constants/userConstants";
 import axios from "axios";
 import { ORDER_LIST_MY_RESET } from "../constants/orderConstants";
@@ -61,10 +64,14 @@ export const logout = () => (dispatch) => {
   dispatch({ type: USER_DETAILS_RESET });
   dispatch({ type: ORDER_LIST_MY_RESET });
   dispatch({ type: USER_LIST_RESET });
-  localStorage.clear();
+  localStorage.setItem("cartItems", "");
+  localStorage.setItem("userInfo", "");
+  localStorage.setItem("shippingAddress", "");
+  localStorage.setItem("__paypal_storage__", "");
+  localStorage.setItem("paymentMethod", "");
 };
 
-export const register = (name, email, password) => async (dispatch) => {
+export const register = (name, email, password, type) => async (dispatch) => {
   try {
     dispatch({
       type: USER_REGISTER_REQUEST,
@@ -77,7 +84,7 @@ export const register = (name, email, password) => async (dispatch) => {
     };
     const { data } = await axios.post(
       "/api/users",
-      { name, email, password },
+      { name, email, password, type },
       config
     );
     dispatch({
@@ -88,8 +95,6 @@ export const register = (name, email, password) => async (dispatch) => {
       type: USER_LOGIN_SUCCESS,
       payload: data,
     });
-
-    localStorage.setItem("userInfo", JSON.stringify(data));
   } catch (error) {
     dispatch({
       type: USER_REGISTER_FAIL,
@@ -100,6 +105,41 @@ export const register = (name, email, password) => async (dispatch) => {
     });
   }
 };
+export const registerVendor =
+  (vendorId, shopName, warehouseAddress, returnAddress) =>
+  async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: VENDOR_REGISTRATION_REQUEST,
+      });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.post(
+        "/api/users/vendor",
+        { vendorId, shopName, warehouseAddress, returnAddress },
+        config
+      );
+      dispatch({
+        type: VENDOR_REGISTRATION_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: VENDOR_REGISTRATION_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
 
 export const getUserDetails = (id) => async (dispatch, getState) => {
   try {

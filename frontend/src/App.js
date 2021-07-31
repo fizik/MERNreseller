@@ -52,13 +52,30 @@ function App() {
             component={ProductListScreen}
             exact
           />
+          <Route
+            path="/vendor/productlist"
+            component={ProductListScreen}
+            exact
+          />
+          <Route
+            path="/vendor/productlist/:pageNumber"
+            component={ProductListScreen}
+            exact
+          />
 
           <Route path="/product/:id" component={ProductScreen} />
           <Route path="/cart/:id?" component={CartScreen} />
           <Route path="/admin/userlist" component={UserListScreen} />
           <Route path="/admin/orderlist" component={OrderListScreen} />
 
-          <Route path="/admin/product/:id/edit" component={ProductEditScreen} />
+          <Route
+            path="/admin/product/:id/:userId/edit"
+            component={ProductEditScreen}
+          />
+          <Route
+            path="/vendor/product/:id/:userId/edit"
+            component={ProductEditScreen}
+          />
         </Container>
       </main>
       <Footer />

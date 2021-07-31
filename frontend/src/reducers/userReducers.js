@@ -20,6 +20,9 @@ import {
   USER_UPDATE_PROFILE_FAIL,
   USER_UPDATE_PROFILE_REQUEST,
   USER_UPDATE_PROFILE_SUCCESS,
+  VENDOR_REGISTRATION_FAIL,
+  VENDOR_REGISTRATION_REQUEST,
+  VENDOR_REGISTRATION_SUCCESS,
 } from "../constants/userConstants";
 
 export const userLoginReducer = (state = {}, action) => {
@@ -49,6 +52,21 @@ export const userRegisterReducer = (state = { user: {} }, action) => {
       return { loading: false, userInfo: action.payload };
 
     case USER_REGISTER_FAIL:
+      return { loading: false, error: action.payload };
+
+    default:
+      return state;
+  }
+};
+export const vendorRegisterReducer = (state = {}, action) => {
+  switch (action.type) {
+    case VENDOR_REGISTRATION_REQUEST:
+      return { ...state, loading: true };
+
+    case VENDOR_REGISTRATION_SUCCESS:
+      return { loading: false, success: true };
+
+    case VENDOR_REGISTRATION_FAIL:
       return { loading: false, error: action.payload };
 
     default:

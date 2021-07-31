@@ -4,13 +4,32 @@ import { Button, Row, Col, ListGroup, Image } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import CheckoutSteps from "../components/ChectoutSteps";
 import Message from "../components/Message";
-import { createOrder } from "../actions/orderActions";
+import { createOrder, createVendorOrder } from "../actions/orderActions";
 
 const PlaceOrderScreen = ({ history }) => {
   const dispatch = useDispatch();
 
   const cart = useSelector((state) => state.cart);
 
+  //vendorwise order seperation
+  function groupArrayOfObjects(list, key) {
+    return list.reduce(function (rv, x) {
+      (rv[x[key]] = rv[x[key]] || []).push(x);
+      return rv;
+    }, {});
+  }
+  const vendorWiseProducts = groupArrayOfObjects(
+    cart?.cartItems,
+    "updatedById"
+  );
+
+  const venderWiseProductArray = (vendorWiseProducts) => {
+    const res = Object.values(vendorWiseProducts);
+    return res;
+  };
+  const seperatedProducts = venderWiseProductArray(vendorWiseProducts);
+
+  // Prices calculations
   const addDecimals = (num) => {
     return (Math.round(num * 100) / 100).toFixed(2);
   };
@@ -31,14 +50,52 @@ const PlaceOrderScreen = ({ history }) => {
   const orderCreate = useSelector((state) => state.orderCreate);
   const { order, success, error } = orderCreate;
 
+  const orderCreateVendor = useSelector((state) => state.orderCreateVendor);
+  const {
+    order: orderVendor,
+    success: successVendor,
+    error: errorVendor,
+  } = orderCreateVendor;
+
   useEffect(() => {
-    if (success) {
+    if (success && successVendor) {
       history.push(`/order/${order._id}`);
     }
     // eslint-disable-next-line
   }, [history, success]);
 
   const placeOrderHandler = () => {
+    seperatedProducts.forEach((list) => {
+      const addDecimals = (num) => {
+        return (Math.round(num * 100) / 100).toFixed(2);
+      };
+
+      const vendorTotal = addDecimals(
+        list?.reduce((acc, item) => acc + item.price * item.qty, 0)
+      );
+
+      const vendorShippingPrice = addDecimals(vendorTotal > 100 ? 100 : 0);
+
+      const vendorTaxPrice = addDecimals(Number(0.15 * vendorTotal));
+
+      const vendorTotalPrice = (
+        Number(vendorTotal) +
+        Number(vendorShippingPrice) +
+        Number(vendorTaxPrice)
+      ).toFixed(2);
+
+      dispatch(
+        createVendorOrder({
+          orderItems: list,
+          shippingAddress: cart.shippingAddress,
+          paymentMethod: cart.paymentMethod,
+          shippingPrice: vendorShippingPrice,
+          taxPrice: vendorTaxPrice,
+          totalPrice: vendorTotalPrice,
+          VendorId: list[0].updatedById,
+        })
+      );
+    });
     dispatch(
       createOrder({
         orderItems: cart.cartItems,
@@ -50,6 +107,9 @@ const PlaceOrderScreen = ({ history }) => {
       })
     );
   };
+  if (success && successVendor) {
+    localStorage.setItem("cartItems", "");
+  }
 
   return (
     <>
@@ -137,6 +197,7 @@ const PlaceOrderScreen = ({ history }) => {
             <ListGroup.Item>
               {error && <Message variant="danger">{error}</Message>}
             </ListGroup.Item>
+
             <ListGroup.Item>
               <Button
                 type="button"
