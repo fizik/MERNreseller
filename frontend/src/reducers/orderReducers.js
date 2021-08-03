@@ -31,6 +31,9 @@ import {
   ORDER_VENDOR_PAY_REQUEST,
   ORDER_VENDOR_DELIVER_SUCCESS,
   ORDER_VENDOR_DELIVER_FAIL,
+  ORDER_VENDOR_DETAILS_REQUEST,
+  ORDER_VENDOR_DETAILS_SUCCESS,
+  ORDER_VENDOR_DETAILS_FAIL,
 } from "../constants/orderConstants";
 
 export const orderCreateReducer = (state = {}, action) => {
@@ -113,18 +116,18 @@ export const orderVendorDetailsReducer = (
   action
 ) => {
   switch (action.type) {
-    case ORDER_DETAILS_REQUEST:
+    case ORDER_VENDOR_DETAILS_REQUEST:
       return {
         ...state,
         loading: true,
       };
 
-    case ORDER_DETAILS_SUCCESS:
+    case ORDER_VENDOR_DETAILS_SUCCESS:
       return {
         loading: false,
         orders: action.payload,
       };
-    case ORDER_DETAILS_FAIL:
+    case ORDER_VENDOR_DETAILS_FAIL:
       return {
         loading: false,
         error: action.payload,

@@ -93,6 +93,13 @@ const orderSchema = mongoose.Schema(
   }
 );
 
+orderSchema.pre("save", async function (next) {
+  if (this.isNew) {
+    const randomId = nanoid(8).toUpperCase();
+    this.delivery.deliveryId = randomId;
+  }
+});
+
 const VendorOrder = mongoose.model("VendorOrder", orderSchema);
 
 export default VendorOrder;

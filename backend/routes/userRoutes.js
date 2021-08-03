@@ -21,8 +21,8 @@ router
 router
   .route("/:id")
   .delete(protect, admin, deleteUser)
-  .get(protect, getUserById)
-  .put(protect, updateUser);
+  .get(protect, admin, getUserById)
+  .put(protect, admin, updateUser);
 
 router.route("/").post(registerUser).get(protect, admin, getUsers);
 router.route("/vendor").post(protect, vendor, registerVendor);

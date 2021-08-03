@@ -19,9 +19,9 @@ const VendorWiseOrderScreen = ({ match, history }) => {
   const orderId = match.params.id;
 
   const dispatch = useDispatch();
-  const VendorOrderDetails = useSelector((state) => state.VendorOrderDetails);
-  const { order, loading, error } = VendorOrderDetails;
-  console.log(order);
+  const orderVendorDetails = useSelector((state) => state.orderVendorDetails);
+  const { order, orderItems, shippingAddress, loading, error } =
+    orderVendorDetails;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -34,23 +34,24 @@ const VendorWiseOrderScreen = ({ match, history }) => {
     const addDecimals = (num) => {
       return (Math.round(num * 100) / 100).toFixed(2);
     };
-
-    order.itemsPrice = addDecimals(
-      order?.orderItems.reduce((acc, item) => acc + item.price * item.qty, 0)
-    );
+    order &&
+      (order.itemsPrice = addDecimals(
+        order?.orderItems.reduce((acc, item) => acc + item.price * item.qty, 0)
+      ));
   }
-  dispatch({ type: ORDER_VENDOR_RESET });
+  // dispatch({ type: ORDER_VENDOR_RESET });
 
   useEffect(() => {
     if (!userInfo) {
       history.push("/login");
     }
 
-    if (!order || successDeliver) {
-      dispatch({ type: ORDER_VENDOR_PAY_RESET });
-      dispatch({ type: ORDER_VENDOR_DELIVER_RESET });
-    }
+    // if (!order || successDeliver) {
+    //   dispatch({ type: ORDER_VENDOR_PAY_RESET });
+    //   dispatch({ type: ORDER_VENDOR_DELIVER_RESET });
+    // }
     dispatch(getVendorOrderDetails(orderId));
+    console.log(orderItems);
   }, [dispatch, orderId, history, userInfo, order, successDeliver]);
 
   const deliverHandler = () => {
