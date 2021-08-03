@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
+
 import { Form, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
@@ -8,20 +7,17 @@ import Loader from "../components/Loader";
 import FormContainer from "../components/FormContainer";
 import { registerVendor } from "../actions/userActions";
 
-const RegisterVendorScreen = ({ match, history }) => {
+const VendorRegistrationScreen = ({ history }) => {
   const dispatch = useDispatch();
-  const [vendorId, setVendorId] = useState("");
-  const [shopName, setshopName] = useState("");
-  const [warehouseAddress, setWarehouseAddress] = useState({});
-  const [returningAddress, setReturningAddress] = useState({});
+  const [shopName, setShopName] = useState("");
+
   const [country, setCountry] = useState("");
   const [city, setCity] = useState("");
   const [address, setAddress] = useState("");
   const [postalCode, setPostalCode] = useState("");
-  const [returnAddress, setReturnAddress] = useState({});
+  const [returnAddress, setReturnAddress] = useState("");
   const [returnCountry, setReturnCountry] = useState("");
   const [returnCity, setReturnCity] = useState("");
-  const [returnAddress, setReturnAddress] = useState("");
   const [returnPostalCode, setReturnPostalCode] = useState("");
 
   const vendorRegister = useSelector((state) => state.vendorRegister);
@@ -29,28 +25,33 @@ const RegisterVendorScreen = ({ match, history }) => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    setWarehouseAddress({ country, city, address, postalCode });
-    setReturningAddress({
-      returnCountry,
-      returnAddress,
-      returnCity,
-      returnPostalCode,
-    });
+
     dispatch(
       registerVendor({
         shopName,
-        warehouseAddress,
+        country,
+        city,
+        address,
+        postalCode,
+        returnCountry,
         returnAddress,
+        returnCity,
+        returnPostalCode,
       })
     );
   };
+  useEffect(() => {
+    if (success) {
+      history.push("/vendor/dashboard");
+    }
+  });
 
   return (
     <>
       <FormContainer>
         <h1>Vender Details Registration</h1>
-        {loadingupdate && <Loader />}
-        {errorUpdate && <Message variant="danger">{errorUpdate}</Message>}
+        {loading && <Loader />}
+        {error && <Message variant="danger">{error}</Message>}
 
         {loading ? (
           <Loader />
@@ -63,8 +64,8 @@ const RegisterVendorScreen = ({ match, history }) => {
               <Form.Control
                 type="text"
                 placeholder="Enter Shop Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={shopName}
+                onChange={(e) => setShopName(e.target.value)}
               ></Form.Control>
             </Form.Group>
             <Form.Label>Warehouse Address</Form.Label>
@@ -160,4 +161,4 @@ const RegisterVendorScreen = ({ match, history }) => {
   );
 };
 
-export default RegisterVendorScreen;
+export default VendorRegistrationScreen;

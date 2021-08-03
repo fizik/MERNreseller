@@ -106,7 +106,17 @@ export const register = (name, email, password, type) => async (dispatch) => {
   }
 };
 export const registerVendor =
-  (vendorId, shopName, warehouseAddress, returnAddress) =>
+  ({
+    shopName,
+    country,
+    city,
+    address,
+    postalCode,
+    returnCountry,
+    returnAddress,
+    returnCity,
+    returnPostalCode,
+  }) =>
   async (dispatch, getState) => {
     try {
       dispatch({
@@ -123,7 +133,17 @@ export const registerVendor =
       };
       const { data } = await axios.post(
         "/api/users/vendor",
-        { vendorId, shopName, warehouseAddress, returnAddress },
+        {
+          shopName,
+          country,
+          city,
+          address,
+          postalCode,
+          returnCountry,
+          returnAddress,
+          returnCity,
+          returnPostalCode,
+        },
         config
       );
       dispatch({

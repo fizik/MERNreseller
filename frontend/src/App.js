@@ -18,6 +18,9 @@ import OrderScreen from "./screens/OrderScreen";
 import UserListScreen from "./screens/UserListScreen";
 import ProductListScreen from "./screens/ProductlistScreen";
 import ProductEditScreen from "./screens/ProductEditScreen";
+import VendorOrderListScreen from "./screens/VendorOrderListScreen";
+import VendorRegistrationScreen from "./screens/VendorRegistrationScreen";
+import VendorWiseOrderScreen from "./screens/VendorWiseOrderScreen";
 import OrderListScreen from "./screens/OrderLstScreen";
 
 function App() {
@@ -41,7 +44,9 @@ function App() {
           <Route path="/shipping" component={ShippingScreen} />
           <Route path="/payment" component={PaymentScreen} />
           <Route path="/placeorder" component={PlaceOrderScreen} />
-          <Route path="/order/:id" component={OrderScreen} />
+          <Route path="/order/:id" component={OrderScreen} exact />
+          <Route path="/order/vendor/:id" component={VendorWiseOrderScreen} />
+
           <Route
             path="/admin/productlist"
             component={ProductListScreen}
@@ -67,6 +72,12 @@ function App() {
           <Route path="/cart/:id?" component={CartScreen} />
           <Route path="/admin/userlist" component={UserListScreen} />
           <Route path="/admin/orderlist" component={OrderListScreen} />
+
+          <Route path="/vendor/orderlist" component={VendorOrderListScreen} />
+          <Route
+            path="/vendor/registration"
+            component={VendorRegistrationScreen}
+          />
 
           <Route
             path="/admin/product/:id/:userId/edit"

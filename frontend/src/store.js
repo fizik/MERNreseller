@@ -29,6 +29,10 @@ import {
   orderListMyReducer,
   orderListReducer,
   orderPayReducer,
+  orderVendorDeliverReducer,
+  orderVendorDetailsReducer,
+  orderVendorPayReducer,
+  vendorOrderListReducer,
 } from "./reducers/orderReducers";
 const reducer = combineReducers({
   productList: productListReducer,
@@ -55,9 +59,13 @@ const reducer = combineReducers({
   orderListMy: orderListMyReducer,
   orderList: orderListReducer,
   orderDeliver: orderDeliverReducer,
-
-  vendorRegister: vendorRegisterReducer,
   orderCreateVendor: orderCreateVendorReducer,
+
+  VendorOrderDetails: orderVendorDetailsReducer,
+  orderVendorPay: orderVendorPayReducer,
+  vendorOrderDeliver: orderVendorDeliverReducer,
+  vendorOrderList: vendorOrderListReducer,
+  vendorRegister: vendorRegisterReducer,
 });
 
 const cartItemsFromStorage = localStorage.getItem("cartItems")

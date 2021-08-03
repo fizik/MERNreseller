@@ -92,7 +92,6 @@ const PlaceOrderScreen = ({ history }) => {
           shippingPrice: vendorShippingPrice,
           taxPrice: vendorTaxPrice,
           totalPrice: vendorTotalPrice,
-          VendorId: list[0].updatedById,
         })
       );
     });

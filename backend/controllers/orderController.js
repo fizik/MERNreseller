@@ -51,7 +51,6 @@ const addVendorOrder = asyncHandler(async (req, res) => {
     taxPrice,
     shippingPrice,
     totalPrice,
-    vendorId,
   } = req.body;
 
   if (orderItems && orderItems.length === 0) {
@@ -68,7 +67,7 @@ const addVendorOrder = asyncHandler(async (req, res) => {
       taxPrice,
       shippingPrice,
       totalPrice,
-      vendorId,
+      vendorId: orderItems[0]?.updatedById,
       createdAt: Date.now(),
     });
 
@@ -83,6 +82,22 @@ const addVendorOrder = asyncHandler(async (req, res) => {
 //@access  PRIVATE
 const getOrderById = asyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id).populate(
+    "user",
+    "name email"
+  );
+
+  if (order) {
+    res.json(order);
+  } else {
+    throw new Error("Order not Found");
+  }
+});
+
+//@desc    GET vendor wise ORDER by ID
+//@route   Get /api/orders/vendor/:id
+//@access  PRIVATE/ Vendor
+const getVendorOrderById = asyncHandler(async (req, res) => {
+  const order = await VendorOrder.findById(req.params.id).populate(
     "user",
     "name email"
   );
@@ -115,10 +130,47 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
     throw new Error("Order not Found");
   }
 });
+//@desc    Update ORDER to paid vendor
+//@route   Get /api/orders/vendor/:id/pay
+//@access  PRIVATE
+const updateOrderToPaidVendor = asyncHandler(async (req, res) => {
+  const order = await VendorOrder.findById(req.params.id);
 
+  if (order) {
+    order.isPaid = true;
+    order.paidAt = Date.now();
+    order.paymentResult = {
+      id: req.body.id,
+      status: req.body.status,
+      update_time: req.body.update_time,
+      email_address: req.body.payer.email_address,
+    };
+    const updatedOrder = await order.save();
+    res.json(updatedOrder);
+  } else {
+    throw new Error("Order not Found");
+  }
+});
+
+//@desc    Update ORDER to delivered vendor
+//@route   Get /api/orders/vendor/:id/deliver
+//@access  PRIVATE/vendor
+const updateOrderToDeliveredVendor = asyncHandler(async (req, res) => {
+  const order = await VendorOrder.findById(req.params.id);
+
+  if (order) {
+    order.delivery.isDelivered = true;
+    order.delivery.deliveredAt = Date.now();
+
+    const updatedOrder = await order.save();
+    res.json(updatedOrder);
+  } else {
+    throw new Error("Order not Found");
+  }
+});
 //@desc    Update ORDER to delivered
 //@route   Get /api/orders/:id/deliver
-//@access  PRIVATE/Damin
+//@access  PRIVATE/
 const updateOrderToDelivered = asyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id);
 
@@ -145,7 +197,6 @@ const getMyOrders = asyncHandler(async (req, res) => {
 //@access  PRIVATE
 const getVendorOrders = asyncHandler(async (req, res) => {
   const orders = await VendorOrder.find({ vendorId: req.user._id });
-
   res.json(orders);
 });
 
@@ -166,4 +217,7 @@ export {
   updateOrderToDelivered,
   getVendorOrders,
   addVendorOrder,
+  getVendorOrderById,
+  updateOrderToPaidVendor,
+  updateOrderToDeliveredVendor,
 };

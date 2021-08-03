@@ -24,6 +24,13 @@ import {
   ORDER_VENDOR_FAIL,
   ORDER_CREATE_RESET,
   ORDER_VENDOR_RESET,
+  ORDER_VENDOR_DELIVER_REQUEST,
+  ORDER_VENDOR_PAY_SUCCESS,
+  ORDER_VENDOR_PAY_FAIL,
+  ORDER_VENDOR_PAY_RESET,
+  ORDER_VENDOR_PAY_REQUEST,
+  ORDER_VENDOR_DELIVER_SUCCESS,
+  ORDER_VENDOR_DELIVER_FAIL,
 } from "../constants/orderConstants";
 
 export const orderCreateReducer = (state = {}, action) => {
@@ -101,6 +108,31 @@ export const orderDetailsReducer = (
       return state;
   }
 };
+export const orderVendorDetailsReducer = (
+  state = { loading: true, orderItems: [], shippingAddress: {} },
+  action
+) => {
+  switch (action.type) {
+    case ORDER_DETAILS_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+
+    case ORDER_DETAILS_SUCCESS:
+      return {
+        loading: false,
+        orders: action.payload,
+      };
+    case ORDER_DETAILS_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+    default:
+      return state;
+  }
+};
 
 export const orderPayReducer = (state = {}, action) => {
   switch (action.type) {
@@ -125,6 +157,30 @@ export const orderPayReducer = (state = {}, action) => {
       return state;
   }
 };
+
+export const orderVendorPayReducer = (state = {}, action) => {
+  switch (action.type) {
+    case ORDER_VENDOR_PAY_REQUEST:
+      return {
+        loading: true,
+      };
+
+    case ORDER_VENDOR_PAY_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+      };
+    case ORDER_VENDOR_PAY_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+    case ORDER_VENDOR_PAY_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
 export const orderDeliverReducer = (state = {}, action) => {
   switch (action.type) {
     case ORDER_DELIVER_REQUEST:
@@ -138,6 +194,29 @@ export const orderDeliverReducer = (state = {}, action) => {
         success: true,
       };
     case ORDER_DELIVER_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+
+    default:
+      return state;
+  }
+};
+
+export const orderVendorDeliverReducer = (state = {}, action) => {
+  switch (action.type) {
+    case ORDER_VENDOR_DELIVER_REQUEST:
+      return {
+        loading: true,
+      };
+
+    case ORDER_VENDOR_DELIVER_SUCCESS:
+      return {
+        loading: false,
+        success: true,
+      };
+    case ORDER_VENDOR_DELIVER_FAIL:
       return {
         loading: false,
         error: action.payload,
@@ -172,6 +251,29 @@ export const orderListMyReducer = (state = { orders: [] }, action) => {
 };
 
 export const orderListReducer = (state = { orders: [] }, action) => {
+  switch (action.type) {
+    case ORDER_LIST_REQUEST:
+      return {
+        loading: true,
+      };
+
+    case ORDER_LIST_SUCCESS:
+      return {
+        loading: false,
+        orders: action.payload,
+      };
+    case ORDER_LIST_FAIL:
+      return {
+        loading: false,
+        error: action.payload,
+      };
+
+    default:
+      return state;
+  }
+};
+
+export const vendorOrderListReducer = (state = { orders: [] }, action) => {
   switch (action.type) {
     case ORDER_LIST_REQUEST:
       return {

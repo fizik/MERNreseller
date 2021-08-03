@@ -63,23 +63,34 @@ const registerUser = asyncHandler(async (req, res) => {
 //@access  private/vendor
 
 const registerVendor = asyncHandler(async (req, res) => {
-  const { vendorId, shopName, warehouseAddress, returnAddress } = req.body;
-  const vendorRegistered = await Vendor.findOne({ vendorId });
+  const {
+    shopName,
+    country,
+    city,
+    address,
+    postalCode,
+    returnCountry,
+    returnAddress,
+    returnCity,
+    returnPostalCode,
+  } = req.body;
+  const vendorRegistered = await Vendor.findOne({ vendorId: req.user._id });
+  console.log(req.body);
   if (!vendorRegistered) {
     await Vendor.create({
-      vendorId: req.body.vendorId,
-      shopName: req.body.shopName,
+      vendorId: req.user._id,
+      shopName: shopName,
       warehouseAddress: {
-        country: req.body.warehouseAddress.country,
-        city: req.body.warehouseAddress.city,
-        address: req.body.warehouseAddress.address,
-        postalCode: req.body.warehouseAddress.postalCode,
+        country: country,
+        city: city,
+        address: address,
+        postalCode: postalCode,
       },
       returnAddress: {
-        country: req.body.returnAddress.country,
-        city: req.body.returnAddress.city,
-        address: req.body.returnAddress.address,
-        postalCode: req.body.returnAddress.postalCode,
+        country: returnCountry,
+        city: returnCity,
+        address: returnAddress,
+        postalCode: returnPostalCode,
       },
     });
     res.status(201);
