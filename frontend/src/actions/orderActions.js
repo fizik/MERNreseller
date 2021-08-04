@@ -260,39 +260,40 @@ export const deliverOrder = (order) => async (dispatch, getState) => {
   }
 };
 
-export const deliverVendorOrder = (order) => async (dispatch, getState) => {
-  try {
-    dispatch({
-      type: ORDER_VENDOR_DELIVER_REQUEST,
-    });
-    const {
-      userLogin: { userInfo },
-    } = getState();
+export const deliverVendorOrder =
+  (order, deliveredItems) => async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: ORDER_VENDOR_DELIVER_REQUEST,
+      });
+      const {
+        userLogin: { userInfo },
+      } = getState();
 
-    const config = {
-      headers: {
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    };
-    const { data } = await axios.put(
-      `/api/orders/vendor/${order._id}/deliver`,
-      {},
-      config
-    );
-    dispatch({
-      type: ORDER_VENDOR_DELIVER_SUCCESS,
-      payload: data,
-    });
-  } catch (error) {
-    dispatch({
-      type: ORDER_VENDOR_DELIVER_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
-    });
-  }
-};
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const { data } = await axios.put(
+        `/api/orders/vendor/${order._id}/deliver`,
+        deliveredItems,
+        config
+      );
+      dispatch({
+        type: ORDER_VENDOR_DELIVER_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: ORDER_VENDOR_DELIVER_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
 
 export const listMyOrders = () => async (dispatch, getState) => {
   try {
