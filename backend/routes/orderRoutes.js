@@ -29,7 +29,7 @@ router.route("/vendor/:id/pay").put(protect, vendor, updateOrderToPaidVendor);
 
 router.route("/:id/deliver").put(protect, vendor, updateOrderToDelivered);
 router
-  .route("/vendor:id/deliver")
+  .route("/vendor/:id/deliver")
   .put(protect, vendor, updateOrderToDeliveredVendor);
 
 export default router;
