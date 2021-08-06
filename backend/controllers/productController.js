@@ -5,7 +5,7 @@ import Product from "../models/productModel.js";
 //@route   GET /api/products
 //@access  public
 const getProducts = asyncHandler(async (req, res) => {
-  const pageSize = 1;
+  const pageSize = 2;
   const page = Number(req.query.pageNumber) || 1;
   const keyword = req.query.keyword
     ? {
@@ -27,6 +27,19 @@ const getProducts = asyncHandler(async (req, res) => {
 // //@access  private
 const getProductsVendor = asyncHandler(async (req, res) => {
   const products = await Product.find({ updatedById: req.user._id });
+  if (products) {
+    res.json(products);
+  } else {
+    res.status(404);
+    throw new Error('"Products not found"');
+  }
+});
+
+// //@desc    Fetch all Products of a Category
+// //@route   GET /api/products/category
+// //@access  public
+const getProductsCategory = asyncHandler(async (req, res) => {
+  const products = await Product.find({ category: req.body.category });
   if (products) {
     res.json(products);
   } else {
@@ -166,4 +179,5 @@ export {
   createProductReview,
   getTopProduct,
   getProductsVendor,
+  getProductsCategory,
 };

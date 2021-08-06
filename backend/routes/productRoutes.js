@@ -10,12 +10,15 @@ import {
   createProductReview,
   getTopProduct,
   getProductsVendor,
+  getProductsCategory,
 } from "../controllers/productController.js";
 
 router.route("/").get(getProducts).post(protect, vendor, createProduct);
 router.route("/vendor/:id").get(protect, vendor, getProductsVendor);
 router.route("/:id/reviews").post(protect, createProductReview);
 router.get("/top", getTopProduct);
+router.get("/category", getProductsCategory);
+
 router
   .route("/:id")
   .get(getProductById)

@@ -1,4 +1,6 @@
 import React, { useEffect } from "react";
+// import { v4 as uuidv4 } from "uuid";
+
 import { Link } from "react-router-dom";
 import { Button, Row, Col, ListGroup, Image } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +12,7 @@ const PlaceOrderScreen = ({ history }) => {
   const dispatch = useDispatch();
 
   const cart = useSelector((state) => state.cart);
+  // const identifier = uuidv4();
 
   //vendorwise order seperation
   function groupArrayOfObjects(list, key) {

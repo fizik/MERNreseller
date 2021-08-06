@@ -156,11 +156,17 @@ const updateOrderToPaidVendor = asyncHandler(async (req, res) => {
 //@route   Get /api/orders/vendor/:id/deliver
 //@access  PRIVATE/vendor
 const updateOrderToDeliveredVendor = asyncHandler(async (req, res) => {
+  const deliveredItems = req.body.items;
   const order = await VendorOrder.findById(req.params.id);
 
-  if (order) {
-    order.delivery.isDelivered = true;
+  if (order.orderedItems.length === deliveredItems.length) {
+    if (deliveredItems === orderedItems) {
+      order.delivery.isDelivered = "Completely";
+    } else {
+      order.delivery.isDelivered = "Partially";
+    }
     order.delivery.deliveredAt = Date.now();
+    order.delivery.deliveredItems = deliveredItems;
 
     const updatedOrder = await order.save();
     res.json(updatedOrder);

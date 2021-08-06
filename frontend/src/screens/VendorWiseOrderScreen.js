@@ -35,30 +35,17 @@ const VendorWiseOrderScreen = ({ match, history }) => {
         orders?.orderItems.reduce((acc, item) => acc + item.price * item.qty, 0)
       ));
   }
-  // dispatch({ type: ORDER_VENDOR_RESET });
 
   useEffect(() => {
     if (!userInfo) {
       history.push("/login");
     }
 
-    // if (!order || successDeliver) {
-    //   dispatch({ type: ORDER_VENDOR_PAY_RESET });
-    //   dispatch({ type: ORDER_VENDOR_DELIVER_RESET });
-    // }
     dispatch(getVendorOrderDetails(orderId));
-  }, [dispatch, orderId, history, userInfo, successDeliver]);
+  }, [dispatch, orderId, history, userInfo]);
 
   const deliverHandler = () => {
     dispatch(deliverVendorOrder(orders, items));
-    // dispatch(
-    //   payVendorOrder(orderId, {
-    //     id: "Addas",
-    //     status: "COMPLETED",
-    //     update_time: Date.now(),
-    //     email_address: userInfo?.email,
-    //   })
-    // );
   };
 
   return (
@@ -167,13 +154,14 @@ const VendorWiseOrderScreen = ({ match, history }) => {
             <ListGroup.Item>
               {error && <Message variant="danger">{error}</Message>}
             </ListGroup.Item>
-            ){loadingDeliver && <Loader />}
+            {loadingDeliver && <Loader />}
             <ListGroup.Item>
               <Form>
                 {orders?.orderItems?.map((product) => {
-                  const delivered = orders?.delivery?.deliveredItems?.filter(
-                    (item) => item.name === product.name
-                  );
+                  // const delivered = orders.delivery.deliveredItems.filter(
+                  //   (item) => item.name === product.name
+                  // );
+                  let delivered;
                   if (delivered) {
                     setItems([...items, product.name]);
                   }
@@ -198,8 +186,8 @@ const VendorWiseOrderScreen = ({ match, history }) => {
                 })}
               </Form>
             </ListGroup.Item>
-            {(orders?.isDelivered === "No" ||
-              orders?.isDelivered === "Partially") && (
+            {(orders?.delivery.isDelivered === "No" ||
+              orders?.delivery.isDelivered === "Partially") && (
               <>
                 <ListGroup.Item>
                   <Button

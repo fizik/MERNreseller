@@ -10,6 +10,7 @@ import {
   productReviewCreateReducer,
   productTopRatedReducer,
   productListMyReducer,
+  categoryWiseProductListReducer,
 } from "./reducers/productReducers";
 import { cartReducer } from "./reducers/cartReducers";
 import {
@@ -32,7 +33,6 @@ import {
   orderPayReducer,
   orderVendorDeliverReducer,
   orderVendorDetailsReducer,
-  orderVendorPayReducer,
   vendorOrderListReducer,
 } from "./reducers/orderReducers";
 const reducer = combineReducers({
@@ -43,6 +43,7 @@ const reducer = combineReducers({
   productUpdate: productUpdateReducer,
   productReviewCreate: productReviewCreateReducer,
   productTopRated: productTopRatedReducer,
+  categoryWiseProductList: categoryWiseProductListReducer,
 
   cart: cartReducer,
 
@@ -64,7 +65,6 @@ const reducer = combineReducers({
   orderCreateVendor: orderCreateVendorReducer,
 
   orderVendorDetails: orderVendorDetailsReducer,
-  orderVendorPay: orderVendorPayReducer,
   vendorOrderDeliver: orderVendorDeliverReducer,
   vendorOrderList: vendorOrderListReducer,
   vendorRegister: vendorRegisterReducer,
